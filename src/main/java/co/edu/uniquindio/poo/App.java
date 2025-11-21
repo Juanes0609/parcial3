@@ -67,7 +67,7 @@ public class App extends Application implements DataObserver {
 
         root.setCenter(tabPane);
 
-        Scene scene = new Scene(root, 1200, 750);
+        Scene scene = new Scene(root, 500, 750);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         primaryStage.setTitle("Gestión de Citas Médicas");
         primaryStage.setScene(scene);
