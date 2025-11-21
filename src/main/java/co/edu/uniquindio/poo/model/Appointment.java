@@ -2,6 +2,8 @@ package co.edu.uniquindio.poo.model;
 
 import java.time.LocalDateTime;
 
+import co.edu.uniquindio.poo.services.PriceStrategy;
+
 public class Appointment {
     private static int nextAppointmentId = 1;
     private final int id;
@@ -24,7 +26,6 @@ public class Appointment {
         return priceStrategy.calculatePrice(basePrice);
     }
 
-    // Getters y Setters
     public int getId() {
         return id;
     }

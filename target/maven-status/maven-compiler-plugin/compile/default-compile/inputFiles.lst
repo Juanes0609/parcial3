@@ -1,0 +1,17 @@
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/ObservableData.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/StandardPriceStrategy.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/PatientFactory.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/view/PatientControllerView.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/PriceStrategy.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/view/AppointmentControllerView.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/DataObserver.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/SpecialistPriceStrategy.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/model/Person.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/ClinicDataStore.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/model/Appointment.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/App.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/PersonFactory.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/services/DoctorFactory.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/model/Doctor.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/view/DoctorControllerView.java
+/Users/juanchicaortega/Documents/Programación 2/parcial3/src/main/java/co/edu/uniquindio/poo/model/Patient.java

@@ -26,15 +26,12 @@ public class Patient extends Person {
         return historyNumber;
     }
 
-    // Patrón Builder anidado
     public static class Builder {
-        // Campos obligatorios
         private final String id;
         private final String name;
         private final String phone;
         private final String historyNumber;
 
-        // Campos opcionales
         private String address = "N/A";
 
         public Builder(String id, String name, String phone, String historyNumber) {

@@ -1,5 +1,13 @@
 package co.edu.uniquindio.poo.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import co.edu.uniquindio.poo.model.Appointment;
+import co.edu.uniquindio.poo.model.Doctor;
+import co.edu.uniquindio.poo.model.Patient;
+
 public class ClinicDataStore implements ObservableData {
     private static ClinicDataStore instance;
 
@@ -9,15 +17,13 @@ public class ClinicDataStore implements ObservableData {
 
     private final List<DataObserver> observers;
 
-    // Constructor privado para evitar instanciación externa
     private ClinicDataStore() {
         this.patients = new ArrayList<>();
         this.doctors = new ArrayList<>();
         this.appointments = new ArrayList<>();
-        this.observers = new CopyOnWriteArrayList<>(); // thread-safe list para observers
+        this.observers = new CopyOnWriteArrayList<>();
     }
 
-    // Método estático para obtener la única instancia del Singleton
     public static ClinicDataStore getInstance() {
         if (instance == null) {
             instance = new ClinicDataStore();
@@ -25,7 +31,6 @@ public class ClinicDataStore implements ObservableData {
         return instance;
     }
 
-    // Métodos para agregar datos
     public void addPatient(Patient patient) {
         this.patients.add(patient);
         notifyObservers("patient");
@@ -41,7 +46,6 @@ public class ClinicDataStore implements ObservableData {
         notifyObservers("appointment");
     }
 
-    // Métodos para obtener datos (copias inmutables)
     public List<Patient> getPatients() {
         return new ArrayList<>(patients);
     }
