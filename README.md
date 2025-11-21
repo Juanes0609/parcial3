@@ -4,8 +4,10 @@ Descripciín basisca de su Proyecto de POO ...
 
 # Autores
 
-- Autor 1
-- Autor 2
+- Juan Chica
+- Juan Pablo Londoño Gomez
+- Miguel Maya
+
 
 # Herramientas
 
