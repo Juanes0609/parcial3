@@ -1,4 +1,4 @@
-package co.edu.uniquindio.poo.view;
+package co.edu.uniquindio.poo.controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,14 +21,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TableCell;
 
-public class AppointmentControllerView {
+public class AppointmentController {
     private final ClinicDataStore dataStore = ClinicDataStore.getInstance();
     private final ObservableList<Appointment> appointmentData;
     private final ObservableList<Patient> patientData;
     private final ObservableList<Doctor> doctorData;
     private TableView<Appointment> appointmentTable;
 
-    public AppointmentControllerView(ObservableList<Appointment> appointmentData, ObservableList<Patient> patientData, ObservableList<Doctor> doctorData) {
+    public AppointmentController(ObservableList<Appointment> appointmentData, ObservableList<Patient> patientData, ObservableList<Doctor> doctorData) {
         this.appointmentData = appointmentData;
         this.patientData = patientData;
         this.doctorData = doctorData;

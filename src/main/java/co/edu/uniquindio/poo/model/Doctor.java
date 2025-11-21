@@ -26,5 +26,9 @@ public class Doctor extends Person{
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
     }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
 }
 

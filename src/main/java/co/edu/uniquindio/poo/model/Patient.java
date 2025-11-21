@@ -1,23 +1,20 @@
 package co.edu.uniquindio.poo.model;
 
 public class Patient extends Person {
-    private String address; // Campo opcional
+    private String address;
     private String historyNumber;
 
-    // Constructor privado para ser usado solo por el Builder
     private Patient(Builder builder) {
         super(builder.id, builder.name, builder.phone);
         this.address = builder.address;
         this.historyNumber = builder.historyNumber;
     }
 
-    // Implementación de método abstracto
     @Override
     public String getDetails() {
         return "Paciente: " + getName() + ", Historia: " + historyNumber;
     }
 
-    // Getters
     public String getAddress() {
         return address;
     }
@@ -25,6 +22,16 @@ public class Patient extends Person {
     public String getHistoryNumber() {
         return historyNumber;
     }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setHistoryNumber(String historyNumber) {
+        this.historyNumber = historyNumber;
+    }
+
+
 
     public static class Builder {
         private final String id;
