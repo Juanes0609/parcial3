@@ -1,41 +1,11 @@
 # parcial3
 
-Descripciín basisca de su Proyecto de POO ...
+Parcia #3 de la maeteria programacion 2 ...
 
 # Autores
 
-- Autor 1
-- Autor 2
-
-# Herramientas
-
-- [java 17](https://adoptium.net/es)
-- [junit 5.10.0](https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api/5.10.0)
-- [maven](https://maven.apache.org)
+- Juan Chica
+- Juan Pablo Londoño Gomez
+- Miguel Angel Maya
 
 
-# Construcción y pruebas
-
-Para compilar el proyecto puede usar el comando:
-
-```shell
-mvn clean compile
-```
-
-Para ejecutar las pruebas puede usar el comando: 
-
-```shell
- mvn clean test
-```
-
-Para generar el jar puede usar el comando: 
-
-```shell
- mvn clean package
-```
-
-y para ejecutar el jar
-
-```shell
- java -jar target/parcial3-1.0.jar
-```
