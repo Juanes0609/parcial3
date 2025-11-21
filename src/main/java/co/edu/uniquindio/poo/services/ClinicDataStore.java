@@ -12,7 +12,6 @@ import javafx.collections.ObservableList;
 
 /**
  * Singleton para gestionar los datos de la clínica.
- * Implementa el Patrón Observer (Subject/Observable).
  */
 public class ClinicDataStore {
     private static ClinicDataStore instance;

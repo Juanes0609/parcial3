@@ -1,9 +1,6 @@
 package co.edu.uniquindio.poo;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import co.edu.uniquindio.poo.controllers.AppointmentController;
 import co.edu.uniquindio.poo.controllers.DoctorController;
@@ -19,19 +16,25 @@ import co.edu.uniquindio.poo.services.PersonFactory;
 import co.edu.uniquindio.poo.services.SpecialistPriceStrategy;
 import co.edu.uniquindio.poo.services.StandardPriceStrategy;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class App extends Application implements DataObserver {
-    private final ClinicDataStore dataStore = ClinicDataStore.getInstance();
+    private ClinicDataStore dataStore = ClinicDataStore.getInstance();
     private TabPane tabPane;
 
-    private final Map<String, Object> controllers = new HashMap<>();
+    private ObservableList<Patient> patientData;
+    private ObservableList<Doctor> doctorData;
+    private ObservableList<Appointment> appointmentData;
+
+    private PatientController patientController;
+    private DoctorController doctorController;
+    private AppointmentController appointmentController;
 
     public static void main(String[] args) {
         launch(args);
@@ -40,88 +43,65 @@ public class App extends Application implements DataObserver {
     @Override
     public void start(Stage primaryStage) {
 
-        initializeDemoData();
+        patientData = FXCollections.observableArrayList(dataStore.getPatients());
+        doctorData = FXCollections.observableArrayList(dataStore.getDoctors());
+        appointmentData = FXCollections.observableArrayList(dataStore.getAppointments());
         dataStore.registerObserver(this);
+
+        initializeDemoData();
+
+        patientController = new PatientController(patientData);
+        doctorController = new DoctorController(doctorData);
+        appointmentController = new AppointmentController(appointmentData, patientData, doctorData);
 
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(10));
 
         tabPane = new TabPane();
 
-        try {
+        Tab patientsTab = createTab("Pacientes", patientController.createView());
+        Tab doctorsTab = createTab("Médicos", doctorController.createView());
+        Tab appointmentsTab = createTab("Citas", appointmentController.createView());
 
-            Tab patientsTab = createTabFromFXML("Pacientes", "PatientView.fxml", "patient");
-            Tab doctorsTab = createTabFromFXML("Médicos", "DoctorView.fxml", "doctor");
-            Tab appointmentsTab = createTabFromFXML("Citas", "AppointmentView.fxml", "appointment");
-
-            tabPane.getTabs().addAll(patientsTab, doctorsTab, appointmentsTab);
-        } catch (IOException e) {
-            showAlert("Error de Carga", "No se pudo cargar una o más vistas FXML.", Alert.AlertType.ERROR);
-            e.printStackTrace();
-            return;
-        }
+        tabPane.getTabs().addAll(patientsTab, doctorsTab, appointmentsTab);
 
         root.setCenter(tabPane);
 
         Scene scene = new Scene(root, 1200, 750);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         primaryStage.setTitle("Gestión de Citas Médicas");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    /**
-     * Carga un archivo FXML y crea una pestaña con su contenido.
-     * 
-     * @param title         El título de la pestaña.
-     * @param fxmlName      El nombre del archivo FXML (ej: "PatientView.fxml").
-     * @param controllerKey La clave para guardar el controlador en el mapa.
-     * @return Una nueva Tab con el contenido FXML.
-     * @throws IOException Si el archivo FXML no se encuentra o no se puede cargar.
-     */
-    private Tab createTabFromFXML(String title, String fxmlName, String controllerKey) throws IOException {
-        String fxmlPath = "/co/edu/uniquindio/poo/resources/" + fxmlName;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent content = loader.load();
-
-        controllers.put(controllerKey, loader.getController());
-
+    private Tab createTab(String title, Region content) {
         Tab tab = new Tab(title);
         tab.setContent(new ScrollPane(content));
         tab.setClosable(false);
         return tab;
     }
 
-    /**
-     * Implementación del Patrón Observer (Mantiene centralizada la actualización de
-     * listas).
-     * Este método se llama desde ClinicDataStore cuando se agrega un nuevo dato.
-     * * @param dataType El tipo de dato que ha cambiado ("patient", "doctor", o
-     * "appointment").
-     */
     @Override
     public void update(String dataType) {
+        switch (dataType) {
+            case "patient":
+                patientData.setAll(dataStore.getPatients());
+                break;
+            case "doctor":
+                doctorData.setAll(dataStore.getDoctors());
+                break;
+            case "appointment":
+                appointmentData.setAll(dataStore.getAppointments());
+                break;
+        }
 
         javafx.application.Platform.runLater(() -> {
-            switch (dataType) {
-                case "patient":
-                    PatientController pc = (PatientController) controllers.get("patient");
-                    if (pc != null) {
-                        pc.getPatientTable().refresh();
-                    }
-                    break;
-                case "doctor":
-                    DoctorController dc = (DoctorController) controllers.get("doctor");
-                    if (dc != null) {
-                        dc.getDoctorTable().refresh();
-                    }
-                    break;
-                case "appointment":
-                    AppointmentController ac = (AppointmentController) controllers.get("appointment");
-                    if (ac != null) {
-                        ac.getAppointmentTable().refresh();
-                    }
-                    break;
-            }
+            if (patientController != null)
+                patientController.getPatientTable().refresh();
+            if (doctorController != null)
+                doctorController.getDoctorTable().refresh();
+            if (appointmentController != null)
+                appointmentController.getAppointmentTable().refresh();
         });
     }
 

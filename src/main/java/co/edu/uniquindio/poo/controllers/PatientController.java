@@ -1,180 +1,124 @@
 package co.edu.uniquindio.poo.controllers;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import java.net.URL;
-import java.util.ResourceBundle;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 import co.edu.uniquindio.poo.model.Patient;
 import co.edu.uniquindio.poo.services.ClinicDataStore;
 import co.edu.uniquindio.poo.services.PatientFactory;
 import co.edu.uniquindio.poo.services.PersonFactory;
 
-public class PatientController implements Initializable {
+public class PatientController {
     private final ClinicDataStore dataStore = ClinicDataStore.getInstance();
+    private final ObservableList<Patient> patientData;
     private final PersonFactory patientFactory = new PatientFactory();
-
-    @FXML
     private TableView<Patient> patientTable;
-    @FXML
-    private TableColumn<Patient, String> idColumn;
-    @FXML
-    private TableColumn<Patient, String> nameColumn;
-    @FXML
-    private TableColumn<Patient, String> phoneColumn;
-    @FXML
-    private TableColumn<Patient, String> historyColumn;
-    @FXML
-    private TableColumn<Patient, String> addressColumn;
 
-    @FXML
-    private TextField idField;
-    @FXML
-    private TextField nameField;
-    @FXML
-    private TextField phoneField;
-    @FXML
-    private TextField historyField;
-    @FXML
-    private TextField addressField;
+    public PatientController(ObservableList<Patient> patientData) {
+        this.patientData = patientData;
+    }
 
-    private ObservableList<Patient> patientData;
+    public VBox createView() {
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(20));
+        content.setStyle("-fx-background-color: #f5f5f5;");
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+        TitledPane formPane = new TitledPane("👤 Registrar Nuevo Paciente", createPatientForm());
+        formPane.setCollapsible(false);
 
-        this.patientData = dataStore.getPatients();
-        patientTable.setItems(patientData);
+        patientTable = createPatientTable();
 
-        idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        phoneColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPhone()));
-        historyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHistoryNumber()));
-        addressColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress()));
+        Label tableLabel = new Label("📋 Lista de Pacientes");
+        tableLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+        
+        content.getChildren().addAll(formPane, new Separator(), tableLabel, patientTable);
+        return content;
+    }
 
-        patientTable.getSelectionModel().selectedItemProperty().addListener(
+    private TableView<Patient> createPatientTable() {
+        TableView<Patient> table = new TableView<>(patientData);
+
+        TableColumn<Patient, String> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Patient, String> nameCol = new TableColumn<>("Nombre");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Patient, String> phoneCol = new TableColumn<>("Teléfono");
+        phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
+
+        TableColumn<Patient, String> historyCol = new TableColumn<>("Historia");
+        historyCol.setCellValueFactory(new PropertyValueFactory<>("historyNumber"));
+
+        TableColumn<Patient, String> addressCol = new TableColumn<>("Dirección");
+        addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+
+        table.getColumns().addAll(idCol, nameCol, phoneCol, historyCol, addressCol);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        table.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showPatientDetails(newValue));
+
+        return table;
     }
 
-    /** Muestra los detalles del paciente seleccionado en los campos de texto. */
-    private void showPatientDetails(Patient patient) {
-        if (patient != null) {
-            idField.setText(patient.getId());
-            nameField.setText(patient.getName());
-            phoneField.setText(patient.getPhone());
-            historyField.setText(patient.getHistoryNumber());
-            addressField.setText(patient.getAddress());
-        } else {
-            clearFields();
-        }
-    }
+    private GridPane createPatientForm() {
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(10));
 
-    /** Limpia los campos de texto del formulario. */
-    private void clearFields() {
-        idField.setText("");
-        nameField.setText("");
-        phoneField.setText("");
-        historyField.setText("");
-        addressField.setText("");
-    }
+        TextField idField = new TextField();
+        TextField nameField = new TextField();
+        TextField phoneField = new TextField();
+        TextField historyField = new TextField();
+        TextField addressField = new TextField();
 
-    /** Maneja la acción de agregar un nuevo paciente. */
-    @FXML
-    private void handleAddPatient() {
-        try {
-            if (isInputValid()) {
-                Patient newPatient = (Patient) patientFactory.createPerson(
-                        idField.getText(),
-                        nameField.getText(),
-                        phoneField.getText(),
-                        historyField.getText(),
-                        addressField.getText());
+        grid.addRow(0, new Label("ID:"), idField);
+        grid.addRow(1, new Label("Nombre:"), nameField);
+        grid.addRow(2, new Label("Teléfono:"), phoneField);
+        grid.addRow(3, new Label("Historia:"), historyField);
+        grid.addRow(4, new Label("Dirección:"), addressField);
 
-                dataStore.addPatient(newPatient);
-                clearFields();
-                showAlert("Éxito", "Paciente agregado correctamente.", Alert.AlertType.INFORMATION);
-            }
-        } catch (IllegalArgumentException e) {
-            showAlert("Error de Datos", e.getMessage(), Alert.AlertType.ERROR);
-        } catch (Exception e) {
-            showAlert("Error", "No se pudo agregar el paciente.", Alert.AlertType.ERROR);
-        }
-    }
-
-    /** Maneja la acción de editar el paciente seleccionado. */
-    @FXML
-    private void handleEditPatient() {
-        Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
-        if (selectedPatient != null && isInputValid()) {
+        Button saveButton = new Button("✓ Guardar Paciente");
+        saveButton.getStyleClass().add("success-button");
+        saveButton.setOnAction(e -> {
             try {
-
-                Patient updatedPatient = (Patient) patientFactory.createPerson(
+                Patient patient = (Patient) patientFactory.createPerson(
                         idField.getText(),
                         nameField.getText(),
                         phoneField.getText(),
                         historyField.getText(),
                         addressField.getText());
 
-                dataStore.editPatient(selectedPatient.getId(), updatedPatient);
-                showAlert("Éxito", "Paciente editado correctamente.", Alert.AlertType.INFORMATION);
-                patientTable.refresh();
-            } catch (IllegalArgumentException e) {
-                showAlert("Error de Datos", e.getMessage(), Alert.AlertType.ERROR);
+                dataStore.addPatient(patient);
+
+                idField.clear();
+                nameField.clear();
+                phoneField.clear();
+                historyField.clear();
+                addressField.clear();
+
+                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Paciente registrado correctamente.");
+
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error de Registro", "Verifique todos los campos.");
             }
-        } else if (selectedPatient == null) {
-            showAlert("No Seleccionado", "Por favor, selecciona un paciente de la tabla.", Alert.AlertType.WARNING);
-        }
+        });
+
+        grid.add(saveButton, 1, 5);
+        return grid;
     }
 
-    /** Maneja la acción de eliminar el paciente seleccionado. */
-    @FXML
-    private void handleDeletePatient() {
-        Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
-        if (selectedPatient != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "¿Estás seguro de que quieres eliminar a " + selectedPatient.getName() + "?", ButtonType.YES,
-                    ButtonType.NO);
-            alert.setTitle("Confirmar Eliminación");
-            alert.setHeaderText("Eliminar Paciente");
-
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.YES) {
-                    dataStore.removePatient(selectedPatient.getId());
-                    clearFields();
-                    showAlert("Éxito", "Paciente eliminado.", Alert.AlertType.INFORMATION);
-                }
-            });
-        } else {
-            showAlert("No Seleccionado", "Por favor, selecciona un paciente de la tabla.", Alert.AlertType.WARNING);
-        }
+    private void showPatientDetails(Patient patient) {
+        // Not implemented for programmatic
     }
 
-    /** Valida la entrada del usuario. */
-    private boolean isInputValid() {
-        String errorMessage = "";
-        if (idField.getText() == null || idField.getText().isEmpty()) {
-            errorMessage += "ID inválido.\n";
-        }
-        if (nameField.getText() == null || nameField.getText().isEmpty()) {
-            errorMessage += "Nombre inválido.\n";
-        }
-        if (phoneField.getText() == null || phoneField.getText().isEmpty()) {
-            errorMessage += "Teléfono inválido.\n";
-        }
-
-        if (errorMessage.isEmpty()) {
-            return true;
-        } else {
-            showAlert("Campos Inválidos", "Corrige los siguientes errores:\n" + errorMessage, Alert.AlertType.ERROR);
-            return false;
-        }
-    }
-
-    /** Muestra un cuadro de diálogo de alerta. */
-    private void showAlert(String title, String content, Alert.AlertType type) {
+    private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);

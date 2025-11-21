@@ -38,17 +38,21 @@ public class AppointmentController {
      * Crea y retorna el nodo principal (VBox) para la pestaña de Citas.
      */
     public VBox createView() {
-        VBox content = new VBox(10);
-        content.setPadding(new Insets(10));
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(20));
+        content.setStyle("-fx-background-color: #f5f5f5;");
 
         // 1. Formulario de Cita
-        TitledPane formPane = new TitledPane("Programar Nueva Cita (Patrón Strategy)", createAppointmentForm());
+        TitledPane formPane = new TitledPane("📅 Programar Nueva Cita", createAppointmentForm());
         formPane.setCollapsible(false);
 
         // 2. Tabla de Citas
         appointmentTable = createAppointmentTable();
 
-        content.getChildren().addAll(formPane, new Separator(), new Label("Lista de Citas Programadas"), appointmentTable);
+        Label tableLabel = new Label("📋 Lista de Citas Programadas");
+        tableLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+        
+        content.getChildren().addAll(formPane, new Separator(), tableLabel, appointmentTable);
         return content;
     }
     
@@ -119,7 +123,8 @@ public class AppointmentController {
         grid.addRow(5, new Label("Estrategia de Precio:"), strategyCb);
 
 
-        Button scheduleButton = new Button("Programar Cita");
+        Button scheduleButton = new Button("📅 Programar Cita");
+        scheduleButton.getStyleClass().add("success-button");
         scheduleButton.setOnAction(e -> {
             try {
                 // Validación básica de campos
